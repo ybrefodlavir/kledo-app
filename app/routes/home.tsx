@@ -1,4 +1,5 @@
 import { useLoaderData, useSearchParams } from "react-router";
+import { Map, Building2, MapPin, Funnel, ChevronDown } from "lucide-react";
 
 export async function loader({ request }: { request: Request }) {
   const dataUrl = new URL("/data/indonesia_regions.json", request.url);
@@ -60,6 +61,13 @@ export default function Home() {
     setSearchParams(params);
   }
 
+  const breadcrumbItems = [
+    { label: "Indonesia" },
+    province && { label: province.name },
+    regency && { label: regency.name },
+    district && { label: district.name },
+  ].filter(Boolean) as { label: string }[];
+
   function resetFilter() {
     setSearchParams(new URLSearchParams(), { replace: true });
   }
@@ -68,93 +76,147 @@ export default function Home() {
     <div className="flex min-h-screen">
       {/* SIDEBAR */}
       <aside className="w-80 border-r p-6 space-y-6">
-        <h2 className="font-semibold text-lg">Filter Wilayah</h2>
+        <h2 className="font-semibold text-lg text-gray-400">Filter Wilayah</h2>
 
         <div>
           <label className="block text-sm mb-1">Provinsi</label>
-          <select
-            name="province"
-            value={selectedProvince}
-            onChange={(e) => updateParam("province", e.target.value)}
-            className="w-full rounded-lg border border-gray-600
-                bg-white-900 text-black
-                px-3 py-2
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" className="bg-white text-black">
-              Pilih Provinsi
-            </option>
-            {provinces.map((p: any) => (
-              <option key={p.id} value={p.id} className="bg-white text-black">
-                {p.name}
-              </option>
-            ))}
-          </select>
+
+          <div className="relative">
+            <div className="absolute left-3 inset-y-0 flex items-center text-gray-600 pointer-events-none">
+              <Map size={20} />
+            </div>
+
+            <select
+              name="province"
+              value={selectedProvince}
+              onChange={(e) => updateParam("province", e.target.value)}
+              className="
+        w-full rounded-lg border border-gray-600
+        bg-white text-black
+        pl-14 pr-10
+        py-2.5
+        appearance-none
+        leading-none
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+      "
+            >
+              <option value="">Pilih Provinsi</option>
+              {provinces.map((p: any) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="absolute right-3 inset-y-0 flex items-center text-gray-500 pointer-events-none">
+              <ChevronDown size={20} />
+            </div>
+          </div>
         </div>
 
         <div>
           <label className="block text-sm mb-1">Kota/Kabupaten</label>
-          <select
-            name="regency"
-            value={selectedRegency}
-            onChange={(e) => updateParam("regency", e.target.value)}
-            className="w-full rounded-lg border border-gray-600
-                bg-white-900 text-black
-                px-3 py-2
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={!selectedProvince}
-          >
-            <option value="" className="bg-white text-black">
-              Pilih Kota/Kabupaten
-            </option>
-            {filteredRegencies.map((r: any) => (
-              <option key={r.id} value={r.id} className="bg-white text-black">
-                {r.name}
-              </option>
-            ))}
-          </select>
+
+          <div className="relative">
+            <div className="absolute left-3 inset-y-0 flex items-center text-gray-600 pointer-events-none">
+              <Building2 size={20} />
+            </div>
+
+            <select
+              name="regency"
+              value={selectedRegency}
+              onChange={(e) => updateParam("regency", e.target.value)}
+              disabled={!selectedProvince}
+              className="
+        w-full rounded-lg border border-gray-600
+        bg-white text-black
+        pl-14 pr-10
+        py-2.5
+        appearance-none
+        leading-none
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+        disabled:opacity-40
+        disabled:cursor-not-allowed
+      "
+            >
+              <option value="">Pilih Kota/Kabupaten</option>
+              {filteredRegencies.map((r: any) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="absolute right-3 inset-y-0 flex items-center text-gray-500 pointer-events-none">
+              <ChevronDown size={20} />
+            </div>
+          </div>
         </div>
 
         <div>
           <label className="block text-sm mb-1">Kecamatan</label>
-          <select
-            name="district"
-            value={selectedDistrict}
-            onChange={(e) => updateParam("district", e.target.value)}
-            className="w-full rounded-lg border border-gray-600
-                bg-white-900 text-black
-                px-3 py-2
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={!selectedRegency}
-          >
-            <option value="" className="bg-white text-black">
-              Pilih Kecamatan
-            </option>
-            {filteredDistricts.map((d: any) => (
-              <option key={d.id} value={d.id} className="bg-white text-black">
-                {d.name}
-              </option>
-            ))}
-          </select>
+
+          <div className="relative">
+            <div className="absolute left-3 inset-y-0 flex items-center text-gray-600 pointer-events-none">
+              <MapPin size={20} />
+            </div>
+
+            <select
+              name="district"
+              value={selectedDistrict}
+              onChange={(e) => updateParam("district", e.target.value)}
+              disabled={!selectedRegency}
+              className="
+        w-full rounded-lg border border-gray-600
+        bg-white text-black
+        pl-14 pr-10
+        py-2.5
+        appearance-none
+        leading-none
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+        disabled:opacity-40
+        disabled:cursor-not-allowed
+      "
+            >
+              <option value="">Pilih Kecamatan</option>
+              {filteredDistricts.map((d: any) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="absolute right-3 inset-y-0 flex items-center text-gray-500 pointer-events-none">
+              <ChevronDown size={20} />
+            </div>
+          </div>
         </div>
 
         <button
           onClick={resetFilter}
-          disabled={!province && !district}
+          disabled={!province && !regency && !district}
           className="
     w-full
-    rounded-lg
-    border border-gray-700
-    bg-white-900
+    flex items-center justify-center gap-2
+
+    rounded-full
+    border-2 border-blue-500
+    bg-white
+
     py-2.5
-    text-black-300
-    transition-all duration-150
+    px-4
 
-    hover:bg-gray-800
-    hover:text-white
-    hover:border-gray-500
+    text-sm font-semibold
+    uppercase tracking-wide
+    text-gray-600
 
-    active:scale-[0.98]
+    transition-all duration-200
+
+    hover:bg-blue-50
+    hover:border-blue-600
+    hover:text-blue-700
+
+    active:scale-[0.97]
 
     focus:outline-none
     focus:ring-2
@@ -162,20 +224,34 @@ export default function Home() {
 
     disabled:opacity-40
     disabled:cursor-not-allowed
-    disabled:hover:bg-gray-900
+    disabled:hover:bg-white
   "
         >
-          Reset Filter
+          <Funnel size={16} />
+          Reset
         </button>
       </aside>
 
       {/* BREAD KONTEN ATAS */}
       <div className="flex-1 p-10 space-y-10">
-        <nav className="breadcrumb text-sm text-gray-500 space-x-2">
-          <span>Indonesia</span>
-          {province && <span> › {province.name}</span>}
-          {regency && <span> › {regency.name}</span>}
-          {district && <span> › {district.name}</span>}
+        <nav className="text-sm flex items-center flex-wrap">
+          {breadcrumbItems.map((item, index) => {
+            const isLast = index === breadcrumbItems.length - 1;
+
+            return (
+              <span key={index} className="flex items-center">
+                {index !== 0 && <span className="mx-2 text-gray-400">›</span>}
+
+                <span
+                  className={
+                    isLast ? "text-blue-500 font-medium" : "text-gray-500"
+                  }
+                >
+                  {item.label}
+                </span>
+              </span>
+            );
+          })}
         </nav>
 
         {/* MAIN KONTEN */}
